@@ -247,7 +247,7 @@ io.on('connection', (socket) => {
 // CONFIGURACIÓN PARA PRODUCCIÓN (SERVIR REACT DESDE NODE.JS)
 app.use(express.static(path.join(__dirname, 'client/dist')));
 
-app.get('*', (req, res) => {
+app.get(/(.*)/, (req, res) => {
     res.sendFile(path.join(__dirname, 'client/dist/index.html'));
 });
 
