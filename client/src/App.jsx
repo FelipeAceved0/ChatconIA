@@ -21,6 +21,7 @@ function App() {
   const [invites, setInvites] = useState([]); // Lista de invitaciones
   const [unreadCounts, setUnreadCounts] = useState({}); // guardará cuántos mensajes sin leer tiene cada usuario y el global.
   const [modalConfig, setModalConfig] = useState({ isOpen: false, title: '', message: '' }); // NUEVO: Estado para el modal
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Estado para el menú lateral en móviles
 
   const t = UI_TEXT[language]; //variable que cargara los textos en el idioma elegido
 
@@ -180,8 +181,11 @@ function App() {
   // PANTALLA 2: Si ya se unió (hasJoined es true), muestra la interfaz del Chat
   return (
     <div className="main-layout">
+      {/* Overlay para cerrar en móviles */}
+      {isSidebarOpen && <div className="sidebar-overlay" onClick={() => setIsSidebarOpen(false)}></div>}
+
       {/* NUEVA BARRA LATERAL */}
-      <aside className="sidebar">
+      <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
         {invites.length > 0 && (
           <div className="invites-container">
             <h4>
@@ -196,6 +200,7 @@ function App() {
                   setChatHistories((prev) => ({ ...prev, [inv.from]: [] })); // Creamos su chat
                   setInvites(invites.filter((_, i) => i !== index)); // Borramos la notificación
                   setActiveTab(inv.from); // Vamos a su chat
+                  setIsSidebarOpen(false);
                 }}>{t.accept}</button>
 
                 <button onClick={() => {
@@ -211,6 +216,7 @@ function App() {
           onClick={() => {
             setActiveTab('global');
             setUnreadCounts((prev) => ({ ...prev, global: 0 }));
+            setIsSidebarOpen(false);
           }}
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '6px', verticalAlign: 'middle' }}><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
@@ -228,9 +234,11 @@ function App() {
                   setActiveTab(user.id);
                   // NUEVO: Borramos la notificación al entrar a su chat
                   setUnreadCounts((prev) => ({ ...prev, [user.id]: 0 }));
+                  setIsSidebarOpen(false);
                 } else {
                   socket.emit('request_chat', { to: user.id, username: username });
                   setModalConfig({ isOpen: true, title: t.notification || 'Notificación', message: `${t.inviteSent} ${user.username}. ${t.waitingResponse}` });
+                  setIsSidebarOpen(false);
                 }
               }
             }}>
@@ -257,8 +265,14 @@ function App() {
       </aside>
       <div className="chat-container">
         <header>
-          {/* Usamos activeTab para saber dónde estamos */}
-          <h2>{t.chatWith} {chatTitle} {chatTitle.includes('Asistente IA') && <span className="bot-badge">BOT</span>}</h2>
+          {/* Botón menú móvil */}
+          <button className="mobile-menu-btn" onClick={() => setIsSidebarOpen(true)}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+          
+          <div className="header-title-container">
+            <h2>{t.chatWith} {chatTitle} {chatTitle.includes('Asistente IA') && <span className="bot-badge">BOT</span>}</h2>
+          </div>
           <div className="header-info">
             <span className="header-info-item">
               <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
