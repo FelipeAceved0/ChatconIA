@@ -49,11 +49,7 @@ async function translateMessage(text, sourceLang, targetLang) {
     try {
         const response = await ai.models.generateContent({
             model: 'gemini-3.6-flash',
-            contents: prompt,
-            config: {
-                temperature: 0.1,
-                maxOutputTokens: 500
-            }
+            contents: prompt
         });
         return response.text.trim(); // .trim() quita espacios al principio y al final
     } catch (error) {
@@ -74,11 +70,7 @@ Texto a traducir: "${text}"`;
     try {
         const response = await ai.models.generateContent({
             model: 'gemini-3.6-flash',
-            contents: prompt,
-            config: {
-                temperature: 0.1,
-                maxOutputTokens: 800
-            }
+            contents: prompt
         });
         // Limpiamos el texto por si la IA devuelve etiquetas markdown como ```json
         let jsonStr = response.text.replace(/```json/g, '').replace(/```/g, '').trim();

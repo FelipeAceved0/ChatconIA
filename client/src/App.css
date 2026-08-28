@@ -683,7 +683,7 @@ header button:hover {
   }
   
   .main-layout {
-    height: 100vh;
+    height: 100dvh; /* Soporte moderno para evitar que la barra de navegación del móvil tape el input */
     border-radius: 0;
     border: none;
   }
