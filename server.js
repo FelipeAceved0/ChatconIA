@@ -48,7 +48,7 @@ async function translateMessage(text, sourceLang, targetLang) {
 
     try {
         const response = await ai.models.generateContent({
-            model: 'gemini-3.6-flash',
+            model: 'gemini-3.5-flash',
             contents: prompt
         });
         return response.text.trim(); // .trim() quita espacios al principio y al final
@@ -69,7 +69,7 @@ Texto a traducir: "${text}"`;
 
     try {
         const response = await ai.models.generateContent({
-            model: 'gemini-3.6-flash',
+            model: 'gemini-3.5-flash',
             contents: prompt
         });
         // Limpiamos el texto por si la IA devuelve etiquetas markdown como ```json
@@ -92,7 +92,7 @@ async function generateBotResponse(userText, userLanguage) {
 
     try {
         const response = await ai.models.generateContent({
-            model: 'gemini-3.6-flash',
+            model: 'gemini-3.5-flash',
             contents: prompt,
             config: {
                 temperature: 0.5,
