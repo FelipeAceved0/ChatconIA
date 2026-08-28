@@ -104,12 +104,12 @@ async function generateBotResponse(userText, userLanguage) {
         console.error("Error en el Bot:", error);
         
         // Detectar error de límite de peticiones (429 Too Many Requests o Quota Exceeded)
-        const errMsg = error.message || "";
+        const errMsg = error.message || String(error) || "Error Desconocido";
         if (errMsg.includes("429") || errMsg.includes("Quota") || errMsg.includes("exceeded")) {
             return "¡Uy! He recibido demasiados mensajes de golpe y mi sistema está saturado (Límite de API). Por favor, espera unos segundos y vuelve a hablarme. 🤖⏳";
         }
         
-        return "Lo siento, mi cerebro de IA está fallando en este momento. 🤖";
+        return "Lo siento, mi cerebro de IA está fallando en este momento. 🤖 [Log Interno: " + errMsg + "]";
     }
 }
 
